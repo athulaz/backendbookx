@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -32,8 +33,8 @@ app.use('/api/books', bookRoutes);  // Book-related routes
 
 
 // Serve static files from the uploads directory
-app.use('/uploads', express.static('uploads'));
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Set up server to listen on a specific port
 const PORT = process.env.PORT || 5000;

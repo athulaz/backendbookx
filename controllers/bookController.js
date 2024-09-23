@@ -16,7 +16,8 @@ const upload = multer({ storage });
 
 const addBook = async (req, res) => {
   const { title, author, genre, description } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';  // This should match the path where the image is saved
+  console.log(req.file);  // This will log the details of the uploaded file
 
   try {
     const book = await Book.create({
@@ -33,6 +34,7 @@ const addBook = async (req, res) => {
     res.status(500).json({ message: 'Error adding book', error });
   }
 };
+
 
 // @desc    Edit a book
 // @route   PUT /api/books/:id
