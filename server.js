@@ -11,14 +11,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
+
 // MongoDB connection
 const MONGO_URI = process.env.MONGO_URI;
-mongoose.connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => console.log('MongoDB connected'))
-    .catch((err) => console.error('MongoDB connection error:', err));
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+
+  
 
 // Import routes
 const userRoutes = require('./routes/userRoutes');
@@ -31,6 +33,7 @@ app.use('/api/books', bookRoutes);  // Book-related routes
 
 // Serve static files from the uploads directory
 app.use('/uploads', express.static('uploads'));
+
 
 // Set up server to listen on a specific port
 const PORT = process.env.PORT || 5000;

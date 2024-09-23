@@ -1,53 +1,27 @@
-// const express = require('express');
-// const { addBook, editBook, deleteBook, searchBooks } = require('../controllers/bookController');
-// const { protect } = require('../middlewares/authMiddleware');
-
-// const router = express.Router();
-
-// // Route to add a new book
-// // POST /api/books
-// router.post('/', protect, addBook);
-
-// // Route to edit a book
-// // PUT /api/books/:id
-// router.put('/:id', protect, editBook);
-
-// // Route to delete a book
-// // DELETE /api/books/:id
-// router.delete('/:id', protect, deleteBook);
-
-// // Route to search for books
-// // GET /api/books/search
-// router.get('/search', protect, searchBooks);
-
-// router.post('/', protect, upload.single('image'), addBook);
-
-// module.exports = router;
-
 const express = require('express');
 const { addBook, editBook, deleteBook, searchBooks } = require('../controllers/bookController');
 const { protect } = require('../middlewares/authMiddleware');
-const multer = require('multer'); // Import multer for handling file uploads
+const multer = require('multer');
 
 const router = express.Router();
 
-// Set up multer storage for images
+// Set up multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Directory to store images
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Save files with a timestamp
+    cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
 
-const upload = multer({ storage }); // Initialize multer with the storage config
+const upload = multer({ storage });
 
 // Route to add a new book (with image upload)
 router.post('/', protect, upload.single('image'), addBook);
 
-// Route to edit a book
-router.put('/:id', protect, editBook);
+// Route to edit a book (with optional image upload)
+router.put('/:id', protect, upload.single('image'), editBook);
 
 // Route to delete a book
 router.delete('/:id', protect, deleteBook);
@@ -56,4 +30,3 @@ router.delete('/:id', protect, deleteBook);
 router.get('/search', protect, searchBooks);
 
 module.exports = router;
-

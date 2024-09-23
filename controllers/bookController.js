@@ -1,26 +1,5 @@
 const Book = require('../models/bookModel');
 
-// @desc    Add a new book
-// @route   POST /api/books
-// @access  Private
-// const addBook = async (req, res) => {
-//   const { title, author, genre } = req.body;
-
-//   try {
-//     const book = await Book.create({
-//       title,
-//       author,
-//       genre,
-//       userId: req.user._id, // Associate the book with the logged-in user
-//     });
-
-//     res.status(201).json(book);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error adding book', error });
-//   }
-// };
-
-
 const multer = require('multer');
 
 // Set up multer for local image storage
@@ -59,32 +38,38 @@ const addBook = async (req, res) => {
 // @route   PUT /api/books/:id
 // @access  Private
 const editBook = async (req, res) => {
-  const { id } = req.params;
-  const { title, author, genre } = req.body;
-
-  try {
-    const book = await Book.findById(id);
-    if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
-
-    // Ensure the user trying to edit is the owner of the book
-    if (book.userId.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Not authorized to edit this book' });
-    }
-
-    // Update the book details
-    book.title = title || book.title;
-    book.author = author || book.author;
-    book.genre = genre || book.genre;
-
-    const updatedBook = await book.save();
-    res.status(200).json(updatedBook);
-  } catch (error) {
-    res.status(500).json({ message: 'Error editing book', error });
-  }
-};
-
+   const { id } = req.params;
+   const { title, author, genre, description } = req.body;
+ 
+   try {
+     const book = await Book.findById(id);
+     if (!book) {
+       return res.status(404).json({ message: 'Book not found' });
+     }
+ 
+     // Ensure the user trying to edit is the owner of the book
+     if (book.userId.toString() !== req.user._id.toString()) {
+       return res.status(401).json({ message: 'Not authorized to edit this book' });
+     }
+ 
+     // Update fields
+     book.title = title || book.title;
+     book.author = author || book.author;
+     book.genre = genre || book.genre;
+     book.description = description || book.description;
+ 
+     // Update image if a new one is uploaded
+     if (req.file) {
+       book.imageUrl = `/uploads/${req.file.filename}`;
+     }
+ 
+     const updatedBook = await book.save();
+     res.status(200).json(updatedBook);
+   } catch (error) {
+     res.status(500).json({ message: 'Error editing book', error });
+   }
+ };
+ 
 // @desc    Delete a book
 // @route   DELETE /api/books/:id
 // @access  Private
