@@ -1,5 +1,5 @@
 const express = require('express');
-const { addBook, editBook, deleteBook, searchBooks } = require('../controllers/bookController');
+const { addBook, editBook, deleteBook, searchBooks, getBookById } = require('../controllers/bookController');
 const { protect } = require('../middlewares/authMiddleware');
 const multer = require('multer');
 
@@ -28,5 +28,7 @@ router.delete('/:id', protect, deleteBook);
 
 // Route to search for books
 router.get('/search', protect, searchBooks);
+
+router.get('/:id', protect, getBookById); // Add this route for getting book details
 
 module.exports = router;
