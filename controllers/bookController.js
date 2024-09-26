@@ -109,6 +109,32 @@ const deleteBook = async (req, res) => {
 // @desc    Search books by title, author, or genre
 // @route   GET /api/books/search
 // @access  Private
+// const searchBooks = async (req, res) => {
+//   const { query } = req.query;
+
+//   try {
+//     const searchQuery = query
+//       ? {
+//           $or: [
+//             { title: { $regex: query, $options: 'i' } },
+//             { author: { $regex: query, $options: 'i' } },
+//             { genre: { $regex: query, $options: 'i' } },
+//           ],
+//           userId: req.user._id, // Only return books owned by the logged-in user
+//         }
+//       : { userId: req.user._id };
+
+//     const books = await Book.find(searchQuery);
+
+//     res.status(200).json(books);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error fetching books', error });
+//   }
+// };
+
+// @desc    Search books by title, author, or genre
+// @route   GET /api/books/search
+// @access  Private (You can leave it private if the user needs to be logged in)
 const searchBooks = async (req, res) => {
   const { query } = req.query;
 
@@ -120,18 +146,19 @@ const searchBooks = async (req, res) => {
             { author: { $regex: query, $options: 'i' } },
             { genre: { $regex: query, $options: 'i' } },
           ],
-          userId: req.user._id, // Only return books owned by the logged-in user
+          // Remove userId filter to allow fetching all books
+          // userId: req.user._id
         }
-      : { userId: req.user._id };
+      : {}; // No user-specific filter, fetch all books
 
-    const books = await Book.find(searchQuery);
+    // const books = await Book.find(searchQuery);
+    const books = await Book.find(searchQuery).populate('userId', 'name email'); // Populate user details
 
     res.status(200).json(books);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching books', error });
   }
 };
-
 
 // @desc    Get a single book by ID
 // @route   GET /api/books/:id

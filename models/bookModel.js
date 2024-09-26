@@ -1,6 +1,7 @@
-// const mongoose = require('mongoose');
 
-// // Define the book schema
+
+const mongoose = require('mongoose');
+
 // const bookSchema = mongoose.Schema({
 //   title: {
 //     type: String,
@@ -14,7 +15,6 @@
 //     type: String,
 //     required: [true, 'Please add a genre'],
 //   },
-
 //   description: {
 //     type: String,
 //     required: [true, 'Please add a description'],
@@ -23,21 +23,12 @@
 //     type: String, // URL of the uploaded image
 //     required: [true, 'Please add an image'],
 //   },
-  
 //   userId: {
-//     type: mongoose.Schema.Types.ObjectId, // Link to the user who added the book
+//     type: mongoose.Schema.Types.ObjectId,
 //     required: true,
 //     ref: 'User',
 //   },
-// }, { timestamps: true }); // Adds createdAt and updatedAt fields
-
-// const Book = mongoose.model('Book', bookSchema);
-
-// module.exports = Book;
-
-
-const mongoose = require('mongoose');
-
+// }, { timestamps: true });
 const bookSchema = mongoose.Schema({
   title: {
     type: String,
@@ -62,7 +53,7 @@ const bookSchema = mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User',
+    ref: 'User',  // Reference the User model
   },
 }, { timestamps: true });
 

@@ -13,8 +13,6 @@ app.use(cors());
 app.use(express.json());
 
 
-
-
 // MongoDB connection
 const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
@@ -39,3 +37,5 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Set up server to listen on a specific port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
