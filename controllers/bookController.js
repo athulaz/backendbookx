@@ -77,60 +77,28 @@ const editBook = async (req, res) => {
 // @access  Private
 
 const deleteBook = async (req, res) => {
-   const { id } = req.params;
- 
-   try {
-     // Log book and user details for debugging
-     console.log('Deleting Book ID:', id);
-     console.log('User ID:', req.user._id);
- 
-     const book = await Book.findById(id);
- 
-     if (!book) {
-       return res.status(404).json({ message: 'Book not found' });
-     }
- 
-     // Ensure that the user deleting the book is the owner
-     if (book.userId.toString() !== req.user._id.toString()) {
-       return res.status(401).json({ message: 'Not authorized to delete this book' });
-     }
- 
-     // Use findByIdAndDelete instead of book.remove()
-     await Book.findByIdAndDelete(id);
- 
-     res.status(200).json({ message: 'Book removed successfully' });
-   } catch (error) {
-     console.error('Error deleting book:', error);
-     res.status(500).json({ message: 'Error deleting book', error });
-   }
- };
- 
+  const { id } = req.params;
 
-// @desc    Search books by title, author, or genre
-// @route   GET /api/books/search
-// @access  Private
-// const searchBooks = async (req, res) => {
-//   const { query } = req.query;
+  try {
+    const book = await Book.findById(id);
 
-//   try {
-//     const searchQuery = query
-//       ? {
-//           $or: [
-//             { title: { $regex: query, $options: 'i' } },
-//             { author: { $regex: query, $options: 'i' } },
-//             { genre: { $regex: query, $options: 'i' } },
-//           ],
-//           userId: req.user._id, // Only return books owned by the logged-in user
-//         }
-//       : { userId: req.user._id };
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
 
-//     const books = await Book.find(searchQuery);
+    // Allow deletion if the book has no userId (for old entries)
+    if (book.userId && book.userId.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Not authorized to delete this book' });
+    }
 
-//     res.status(200).json(books);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error fetching books', error });
-//   }
-// };
+    await Book.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Book removed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting book', error });
+  }
+};
+
+
 
 // @desc    Search books by title, author, or genre
 // @route   GET /api/books/search
@@ -174,6 +142,7 @@ const getBookById = async (req, res) => {
     res.status(500).json({ message: 'Error fetching book', error });
   }
 };
+
 
 module.exports = { addBook, editBook, deleteBook, searchBooks, getBookById };
 
